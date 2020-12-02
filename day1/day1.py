@@ -9,6 +9,8 @@ def get_expense_report(path):
 def pairs(er, target):
     for i in range(len(er)):
         j = 0
+        if er[i] >= target:
+            continue
         while j < i:
             if (er[i] + er[j]) == target:
                 return er[i] * er[j]
@@ -18,12 +20,15 @@ def pairs(er, target):
 def triplets(er, target):
     for i in range(len(er)):
         j = 0
+        if er[i] >= target:
+            continue
         while j < i:
             k = 0
-            while k < j:
-                if (er[i] + er[j] + er[k]) == target:
-                    return er[i] * er[j] * er[k]
-                k += 1
+            if (er[i] + er[j]) < target:
+                while k < j:
+                    if (er[i] + er[j] + er[k]) == target:
+                        return er[i] * er[j] * er[k]
+                    k += 1
             j += 1
 
 
