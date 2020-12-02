@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 
 
+# def count_chars(char, string):
+#     count = 0
+#     for c in string:
+#         if c == char:
+#             count += 1
+#     return count
+
+
 def read_lines(path):
     with open(path) as f:
         return f.read().strip().split("\n")
@@ -14,6 +22,8 @@ def num_valid1(path):
         min, max = range_.split("-")
         min, max = int(min), int(max)
         char = char.replace(":", "")
+        # if min <= count_chars(char, passwd) <= max:
+        #     valid += 1
         if min <= passwd.count(char) <= max:
             valid += 1
     return valid
