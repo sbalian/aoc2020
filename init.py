@@ -16,6 +16,7 @@ if __name__ == "__main__":
 
 
 def main():
+    # min day should be 1 ...
     day = (
         max(
             [
