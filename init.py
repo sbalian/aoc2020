@@ -32,6 +32,7 @@ def main():
     file_name = f"./{dir_name}/{dir_name}.py"
     with open(file_name, "w") as f:
         f.write(TEMPLATE)
+    os.system(f"chmod +x {file_name}")
     os.system(f"touch ./{dir_name}/input.txt")
 
 
