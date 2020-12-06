@@ -16,17 +16,19 @@ if __name__ == "__main__":
 
 
 def main():
-    # min day should be 1 ...
-    day = (
-        max(
-            [
-                int(item[3:])
-                for item in os.listdir(".")
-                if item.startswith("day")
-            ]
+    try:
+        day = (
+            max(
+                [
+                    int(item[3:])
+                    for item in os.listdir(".")
+                    if item.startswith("day")
+                ]
+            )
+            + 1
         )
-        + 1
-    )
+    except ValueError:
+        day = 1
     dir_name = f"day{day}"
     os.mkdir(dir_name)
     file_name = f"./{dir_name}/{dir_name}.py"
