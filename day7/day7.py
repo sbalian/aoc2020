@@ -24,26 +24,23 @@ def get_graph(path):
     return graph
 
 
-def get_visited(graph, start, visited=None):
+def path_exists(graph, start, end, visited=None):
     if visited is None:
         visited = []
     visited.append(start)
     for neighbor, _ in graph[start]:
         if neighbor not in visited:
-            get_visited(graph, neighbor, visited)
-    return visited
+            path_exists(graph, neighbor, end, visited)
+    return end in visited
 
 
 def num_paths(graph, end):
-    paths = 0
-    for node in graph.keys():
-        if node == end:
-            continue
-        else:
-            visited = get_visited(graph, node)
-            if end in visited:
-                paths += 1
-    return paths
+    return sum(
+        [
+            node != end and path_exists(graph, node, end)
+            for node in graph.keys()
+        ]
+    )
 
 
 def num_bags_(graph, start):
