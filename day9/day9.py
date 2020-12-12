@@ -50,9 +50,8 @@ def part2(numbers, target):
 
 def main():
     numbers = get_numbers("input.txt")
-    print(part2(numbers, target=90433990))  # 11691646
-
-    # assert find_first_invalid(numbers, preamble_length=25) == 90433990
+    assert find_first_invalid(numbers, preamble_length=25) == 90433990
+    assert part2(numbers, target=90433990) == 11691646
     print("All tests passed.")
 
 
