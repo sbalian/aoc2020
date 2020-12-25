@@ -1,6 +1,9 @@
 #!/usr/bin/env python
 
 
+import copy
+
+
 def read_input(path):
     with open(path) as f:
         player1, player2 = f.read().strip().split("\n\n")
@@ -28,9 +31,44 @@ def part1(player1, player2):
         return score(player1)
 
 
+def recursive_combat(player1, player2):
+
+    seen = set()
+
+    while player1 != [] and player2 != []:
+
+        if tuple([tuple(player1), tuple(player2)]) in seen:
+            return 1, player1
+        seen.add(tuple([tuple(player1), tuple(player2)]))
+
+        card1 = player1.pop(0)
+        card2 = player2.pop(0)
+
+        if len(player1) >= card1 and len(player2) >= card2:
+            winner, _ = recursive_combat(
+                copy.copy(player1[:card1]), copy.copy(player2[:card2])
+            )
+        else:
+            if card1 > card2:
+                winner = 1
+            else:
+                winner = 2
+
+        if winner == 1:
+            player1.extend([card1, card2])
+        else:
+            player2.extend([card2, card1])
+
+    if player1 == []:
+        return 2, player2
+    else:
+        return 1, player1
+
+
 def main():
     player1, player2 = read_input("input.txt")
-    assert part1(player1, player2) == 32472
+    _, winning_cards = recursive_combat(player1, player2)
+    assert score(winning_cards) == 36463
     print("All tests passed.")
 
 
