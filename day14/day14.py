@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+import re
+
 
 def read_program(path):
     with open(path) as f:
@@ -7,53 +9,45 @@ def read_program(path):
     return lines
 
 
+def extract_mask(line):
+    return re.match(r"mask = (?P<mask>.*)", line).group("mask")
+
+
+def extract_address_value(line):
+    m = re.match(r"mem\[(?P<address>.*)\] = (?P<value>.*)", line)
+    return int(m.group("address")), int(m.group("value"))
+
+
 def part1(program):
     array = {}
     for line in program:
         if line.startswith("mask"):
-            mask = line.split()[-1]
-            mask_ = {}
-            for i, char in enumerate(mask):
-                if char != "X":
-                    mask_[i] = char
+            mask = extract_mask(line)
         else:
-            s = line.split()
-            value = int(s[-1])
-            address = int(s[0][4:][:-1])
-            value = bin(value)[2:].zfill(36)
-            new_value = []
-            for i, char in enumerate(value):
-                if i in mask_:
-                    new_value.append(mask_[i])
-                else:
-                    new_value.append(char)
-            new_value = "".join(new_value)
-            array[address] = new_value
-    return sum([int(x, 2) for x in array.values()])
+            address, value = extract_address_value(line)
+            array[address] = (value | int(mask.replace("X", "0"), 2)) & int(
+                mask.replace("X", "1"), 2
+            )
+    return sum(array.values())
 
 
 def part2(program):
     array = {}
     for line in program:
         if line.startswith("mask"):
-            mask = line.split()[-1]
-            mask_ = {}
-            for i, char in enumerate(mask):
+            mask = {}
+            for i, char in enumerate(extract_mask(line)):
                 if char != "0":
-                    mask_[i] = char
+                    mask[i] = char
         else:
-            s = line.split()
-            value = int(s[-1])
-            address = int(s[0][4:][:-1])
+            address, value = extract_address_value(line)
             address = str(bin(address))[2:].zfill(36)
-
             new_address = []
             for i, char in enumerate(address):
-                if i in mask_:
-                    new_address.append(mask_[i])
+                if i in mask:
+                    new_address.append(mask[i])
                 else:
                     new_address.append(char)
-
             num_floating = new_address.count("X")
             floating = []
             for i in range(2 ** num_floating):
