@@ -35,38 +35,22 @@ def part2(program):
     array = {}
     for line in program:
         if line.startswith("mask"):
-            mask = {}
-            for i, char in enumerate(extract_mask(line)):
-                if char != "0":
-                    mask[i] = char
+            mask = extract_mask(line)
         else:
             address, value = extract_address_value(line)
-            address = str(bin(address))[2:].zfill(36)
-            new_address = []
-            for i, char in enumerate(address):
-                if i in mask:
-                    new_address.append(mask[i])
-                else:
-                    new_address.append(char)
-            num_floating = new_address.count("X")
-            floating = []
+            address = address | int(mask.replace("X", "0"), 2)
+            template = list(str(bin(address))[2:].zfill(36))
+            num_floating = 0
+            for i, m in enumerate(mask):
+                if m == "X":
+                    num_floating += 1
+                    template[i] = "{}"
+            template = "".join(template)
             for i in range(2 ** num_floating):
-                floating.append(bin(i)[2:].zfill(num_floating))
-
-            addresses = []
-            for f in floating:
-                to_insert = list(f)
-                final_address = []
-                j = 0
-                for char in new_address:
-                    if char == "X":
-                        final_address.append(to_insert[j])
-                        j += 1
-                    else:
-                        final_address.append(char)
-                addresses.append("".join(final_address))
-            for x in addresses:
-                array[int(x, 2)] = value
+                address = template.format(
+                    *tuple(str(bin(i))[2:].zfill(num_floating))
+                )
+                array[address] = value
     return sum(array.values())
 
 
@@ -79,7 +63,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# for i in range(2**5):
-#     print()
