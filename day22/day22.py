@@ -67,6 +67,7 @@ def recursive_combat(player1, player2):
 
 def main():
     player1, player2 = read_input("input.txt")
+    assert part1(copy.copy(player1), copy.copy(player2)) == 32472
     _, winning_cards = recursive_combat(player1, player2)
     assert score(winning_cards) == 36463
     print("All tests passed.")
