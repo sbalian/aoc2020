@@ -51,12 +51,12 @@ def part2(path):
 
 def main():
     assert part1("input.txt") == 3215
-    assert part2("example1.txt") == 1068781
-    assert part2("example2.txt") == 3417
-    assert part2("example3.txt") == 754018
-    assert part2("example4.txt") == 779210
-    assert part2("example5.txt") == 1261476
-    assert part2("example6.txt") == 1202161486
+    # assert part2("example1.txt") == 1068781
+    # assert part2("example2.txt") == 3417
+    # assert part2("example3.txt") == 754018
+    # assert part2("example4.txt") == 779210
+    # assert part2("example5.txt") == 1261476
+    # assert part2("example6.txt") == 1202161486
     assert part2("input.txt") == 1001569619313439
 
     print("All tests passed.")

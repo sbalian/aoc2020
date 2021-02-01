@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 
-import collections
 import itertools
 
 
@@ -24,44 +23,55 @@ class Simulator:
 
         with open(grid_path) as f:
             grid = f.read().strip().split("\n")
-        self.active = set()
+        self.cubes = {}
 
         for row in range(len(grid)):
             for col in range(len(grid[0])):
                 to_add = tuple([row, col] + (self.dimension - 2) * [0])
                 if grid[row][col] == "#":
-                    self.active.add(to_add)
+                    self.cubes[to_add] = True
+        self._add_inactives()
+
+    def _add_inactives(self):
+        neighbors = []
+        for cube, active in self.cubes.items():
+            if active:
+                neighbors.extend(self.get_neighbors(cube))
+        for neighbor in neighbors:
+            if neighbor not in self.cubes:
+                self.cubes[neighbor] = False
 
     def get_neighbors(self, point):
         return (add_coords(point, delta) for delta in self.deltas)
 
     def evolve_one_step(self):
-        to_deactivate = set()
+        to_activate = []
+        to_inactivate = []
 
-        inactive = collections.defaultdict(int)
-
-        for active_cube in self.active:
+        for cube, active in self.cubes.items():
             num_active = 0
-            for neighbor in self.get_neighbors(active_cube):
-                if neighbor in self.active:
+            for neighbor in self.get_neighbors(cube):
+                if neighbor in self.cubes and self.cubes[neighbor]:
                     num_active += 1
-                else:
-                    inactive[neighbor] += 1
-            if num_active < 2 or num_active > 3:
-                to_deactivate.add(active_cube)
+                if num_active > 3:
+                    break
+            if active and num_active not in [2, 3]:
+                to_inactivate.append(cube)
+            elif not active and num_active == 3:
+                to_activate.append(cube)
 
-        for cube in inactive:
-            if inactive[cube] == 3:
-                self.active.add(cube)
-
-        self.active -= to_deactivate
+        for cube in to_activate:
+            self.cubes[cube] = True
+        for cube in to_inactivate:
+            self.cubes[cube] = False
+        self._add_inactives()
 
     def evolve(self, steps):
         [self.evolve_one_step() for _ in range(steps)]
         return self.num_active()
 
     def num_active(self):
-        return len(self.active)
+        return sum(self.cubes.values())
 
 
 def main():
